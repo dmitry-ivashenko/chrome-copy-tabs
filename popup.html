@@ -7,9 +7,14 @@
 </head>
 <body>
   <div class="container">
-    <h2>Открытые вкладки</h2>
+    <h2>Open Tabs</h2>
+    <div class="window-selector">
+      <select id="windowSelect">
+        <option value="all">All Windows</option>
+      </select>
+    </div>
     <textarea id="tabsList" readonly></textarea>
-    <button id="copyButton">Копировать</button>
+    <button id="copyButton">Copy</button>
   </div>
   <script src="popup.js"></script>
 </body>
