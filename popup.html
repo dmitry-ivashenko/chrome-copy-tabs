@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>Chrome Tabs Copier</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
     <h2>Open Tabs</h2>
@@ -13,9 +15,15 @@
         <option value="all">All Windows</option>
       </select>
     </div>
+    <div class="format-selector">
+      <label>
+        <input type="checkbox" id="markdownFormat"> Copy as Markdown
+      </label>
+    </div>
     <textarea id="tabsList" readonly></textarea>
     <button id="copyButton">Copy</button>
   </div>
   <script src="popup.js"></script>
 </body>
-</html> 
+
+</html>

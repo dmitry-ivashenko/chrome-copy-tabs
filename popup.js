@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const textarea = document.getElementById('tabsList');
   const copyButton = document.getElementById('copyButton');
   const windowSelect = document.getElementById('windowSelect');
+  const markdownCheckbox = document.getElementById('markdownFormat');
   
   let allTabs = [];
   let windowsMap = new Map();
@@ -16,7 +17,17 @@ document.addEventListener('DOMContentLoaded', function() {
       tabsToShow = allTabs.filter(tab => tab.windowId === parseInt(selectedWindowId));
     }
 
-    textarea.value = tabsToShow.map(tab => tab.url).join('\n');
+    const isMarkdownFormat = markdownCheckbox.checked;
+    
+    if (isMarkdownFormat) {
+      textarea.value = tabsToShow.map(tab => {
+        // Remove square brackets from title to avoid markdown conflicts
+        const cleanTitle = tab.title.replace(/\[|\]/g, '');
+        return `* [${cleanTitle}](${tab.url})`;
+      }).join('\n');
+    } else {
+      textarea.value = tabsToShow.map(tab => tab.url).join('\n');
+    }
   }
 
   // Get all windows and tabs
@@ -46,6 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Window selection change handler
   windowSelect.addEventListener('change', function() {
     updateTabsList(this.value);
+  });
+
+  // Markdown format checkbox change handler
+  markdownCheckbox.addEventListener('change', function() {
+    updateTabsList(windowSelect.value);
   });
 
   // Copy handler
