@@ -20,7 +20,19 @@
         <input type="checkbox" id="markdownFormat"> Copy as Markdown
       </label>
     </div>
-    <textarea id="tabsList" readonly></textarea>
+
+    <!-- Tabs selection area -->
+    <div class="tabs-selection">
+      <div class="selection-controls">
+        <button id="selectAllBtn" class="control-btn">Select All</button>
+        <button id="clearAllBtn" class="control-btn">Clear All</button>
+      </div>
+      <div id="tabsList" class="tabs-list">
+        <!-- Tab checkboxes will be dynamically generated here -->
+      </div>
+    </div>
+
+    <textarea id="selectedTabsOutput" readonly></textarea>
     <button id="copyButton">Copy</button>
   </div>
   <script src="popup.js"></script>

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Chrome Tabs Copier",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Copy links from all open tabs",
   "permissions": ["tabs", "windows"],
   "action": {

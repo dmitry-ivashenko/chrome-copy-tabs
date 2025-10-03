@@ -1,13 +1,73 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const textarea = document.getElementById('tabsList');
+  const tabsListContainer = document.getElementById('tabsList');
+  const selectedTabsOutput = document.getElementById('selectedTabsOutput');
   const copyButton = document.getElementById('copyButton');
   const windowSelect = document.getElementById('windowSelect');
   const markdownCheckbox = document.getElementById('markdownFormat');
+  const selectAllBtn = document.getElementById('selectAllBtn');
+  const clearAllBtn = document.getElementById('clearAllBtn');
   
   let allTabs = [];
   let windowsMap = new Map();
+  let currentTabsToShow = []; // Tabs currently displayed in the list
 
-  // Function to update tabs list
+  // Function to generate tabs list with checkboxes
+  function generateTabsList(tabsToShow) {
+    currentTabsToShow = tabsToShow;
+    tabsListContainer.innerHTML = '';
+    
+    tabsToShow.forEach((tab, index) => {
+      const tabItem = document.createElement('div');
+      tabItem.className = 'tab-item';
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `tab-${index}`;
+      checkbox.checked = true; // All tabs selected by default
+      checkbox.addEventListener('change', updateSelectedTabsOutput);
+      
+      const label = document.createElement('label');
+      label.className = 'tab-title';
+      label.textContent = tab.title;
+      label.addEventListener('click', (e) => {
+        e.preventDefault();
+        checkbox.checked = !checkbox.checked;
+        updateSelectedTabsOutput();
+      });
+      
+      tabItem.appendChild(checkbox);
+      tabItem.appendChild(label);
+      tabsListContainer.appendChild(tabItem);
+    });
+    
+    updateSelectedTabsOutput();
+  }
+
+  // Function to update the output textarea based on selected tabs
+  function updateSelectedTabsOutput() {
+    const selectedTabs = [];
+    const checkboxes = tabsListContainer.querySelectorAll('input[type="checkbox"]');
+    
+    checkboxes.forEach((checkbox, index) => {
+      if (checkbox.checked && currentTabsToShow[index]) {
+        selectedTabs.push(currentTabsToShow[index]);
+      }
+    });
+    
+    const isMarkdownFormat = markdownCheckbox.checked;
+    
+    if (isMarkdownFormat) {
+      selectedTabsOutput.value = selectedTabs.map(tab => {
+        // Remove square brackets from title to avoid markdown conflicts
+        const cleanTitle = tab.title.replace(/\[|\]/g, '');
+        return `* [${cleanTitle}](${tab.url})`;
+      }).join('\n');
+    } else {
+      selectedTabsOutput.value = selectedTabs.map(tab => tab.url).join('\n');
+    }
+  }
+
+  // Function to update tabs list based on window selection
   function updateTabsList(selectedWindowId = 'all') {
     let tabsToShow = [];
     
@@ -17,17 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
       tabsToShow = allTabs.filter(tab => tab.windowId === parseInt(selectedWindowId));
     }
 
-    const isMarkdownFormat = markdownCheckbox.checked;
-    
-    if (isMarkdownFormat) {
-      textarea.value = tabsToShow.map(tab => {
-        // Remove square brackets from title to avoid markdown conflicts
-        const cleanTitle = tab.title.replace(/\[|\]/g, '');
-        return `* [${cleanTitle}](${tab.url})`;
-      }).join('\n');
-    } else {
-      textarea.value = tabsToShow.map(tab => tab.url).join('\n');
-    }
+    generateTabsList(tabsToShow);
   }
 
   // Get current window first, then all windows and tabs
@@ -66,12 +116,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Markdown format checkbox change handler
   markdownCheckbox.addEventListener('change', function() {
-    updateTabsList(windowSelect.value);
+    updateSelectedTabsOutput();
+  });
+
+  // Select All button handler
+  selectAllBtn.addEventListener('click', function() {
+    const checkboxes = tabsListContainer.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = true;
+    });
+    updateSelectedTabsOutput();
+  });
+
+  // Clear All button handler
+  clearAllBtn.addEventListener('click', function() {
+    const checkboxes = tabsListContainer.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = false;
+    });
+    updateSelectedTabsOutput();
   });
 
   // Copy handler
   copyButton.addEventListener('click', function() {
-    textarea.select();
+    selectedTabsOutput.select();
     document.execCommand('copy');
     
     // Visual feedback
