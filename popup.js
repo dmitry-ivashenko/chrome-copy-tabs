@@ -30,28 +30,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Get all windows and tabs
-  chrome.windows.getAll({ populate: true }, function(windows) {
-    // Clear selector
-    windowSelect.innerHTML = '<option value="all">All Windows</option>';
-    
-    windows.forEach(window => {
-      // Add tabs to the general list
-      allTabs = allTabs.concat(window.tabs);
+  // Get current window first, then all windows and tabs
+  chrome.windows.getCurrent(function(currentWindow) {
+    chrome.windows.getAll({ populate: true }, function(windows) {
+      // Clear selector
+      windowSelect.innerHTML = '<option value="all">All Windows</option>';
       
-      // Save window information
-      windowsMap.set(window.id, window);
+      const currentWindowId = currentWindow.id;
       
-      // Add window option
-      const tabCount = window.tabs.length;
-      const option = document.createElement('option');
-      option.value = window.id;
-      option.textContent = `Window ${window.id} (${tabCount} tabs)`;
-      windowSelect.appendChild(option);
-    });
+      windows.forEach(window => {
+        // Add tabs to the general list
+        allTabs = allTabs.concat(window.tabs);
+        
+        // Save window information
+        windowsMap.set(window.id, window);
+        
+        // Add window option
+        const tabCount = window.tabs.length;
+        const option = document.createElement('option');
+        option.value = window.id;
+        option.textContent = `Window ${window.id} (${tabCount} tabs)`;
+        windowSelect.appendChild(option);
+      });
 
-    // Show all tabs by default
-    updateTabsList();
+      // Set current window as selected by default
+      windowSelect.value = currentWindowId;
+      updateTabsList(currentWindowId);
+    });
   });
 
   // Window selection change handler
