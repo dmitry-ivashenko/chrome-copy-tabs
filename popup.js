@@ -100,7 +100,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const tabCount = window.tabs.length;
         const option = document.createElement('option');
         option.value = window.id;
-        option.textContent = `Window ${window.id} (${tabCount} tabs)`;
+        
+        // Add (current) label to the current window
+        const currentLabel = window.id === currentWindowId ? ' (current)' : '';
+        option.textContent = `Window ${window.id} (${tabCount} tabs)${currentLabel}`;
+        
         windowSelect.appendChild(option);
       });
 
