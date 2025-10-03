@@ -69,6 +69,16 @@ h2 {
   background-color: #e0e0e0;
 }
 
+.current-tab-btn {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  border-color: #dadce0;
+}
+
+.current-tab-btn:hover {
+  background-color: #d2e3fc;
+}
+
 .tabs-list {
   max-height: 200px;
   overflow-y: auto;

@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const markdownCheckbox = document.getElementById('markdownFormat');
   const selectAllBtn = document.getElementById('selectAllBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+  const currentTabBtn = document.getElementById('currentTabBtn');
   
   let allTabs = [];
   let windowsMap = new Map();
@@ -133,6 +134,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkboxes = tabsListContainer.querySelectorAll('input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
       checkbox.checked = false;
+    });
+    updateSelectedTabsOutput();
+  });
+
+  // Current Tab Only button handler
+  currentTabBtn.addEventListener('click', function() {
+    const checkboxes = tabsListContainer.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox, index) => {
+      // Select only the active tab, unselect all others
+      const tab = currentTabsToShow[index];
+      checkbox.checked = tab && tab.active;
     });
     updateSelectedTabsOutput();
   });
